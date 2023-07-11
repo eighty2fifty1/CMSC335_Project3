@@ -12,17 +12,19 @@ public class Car implements Runnable {
 
     SimpleBooleanProperty paused = new SimpleBooleanProperty(false);
     List<TrafficLight> trafficLights;
-    public Car(List<TrafficLight> t){
+
+    public Car(List<TrafficLight> t) {
         this.trafficLights = t;
     }
 
     @Override
     public void run() {
-        while (!paused.get()){
+        while (!paused.get()) {
             try {
                 Thread.sleep(1000);
-                Platform.runLater(()->{
+                Platform.runLater(() -> {
                     xPos.set(xPos.get() + speed.get());
+                    checkLight(xPos);
                 });
             } catch (Exception e) {
                 System.out.println(e);
@@ -30,7 +32,17 @@ public class Car implements Runnable {
         }
     }
 
-    private void drive() {
-
+    private void checkLight(SimpleIntegerProperty pos) {
+        synchronized (this) {
+            if (pos.get() % 1000 == 0) {
+                if (trafficLights.get(1 + (pos.get()) / 1000).ltCol.getColor().equals(LightColor.RED)) {
+                    try {
+                        wait();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
     }
 }
