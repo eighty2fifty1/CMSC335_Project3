@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.VBox?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.control.TextField?>
+<VBox alignment="CENTER" spacing="20.0" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.example.cmsc335_project3.TrafficController">
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
+    </padding>
+    <Label text="Elapsed Time: "/>
+    <Label fx:id="elapsedTimeLabel" text="poop" />
+    <GridPane fx:id="gridPane" hgap="5" vgap="5">
+        <Label text="Car" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+        <Label text="1" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+        <Label text="2" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+        <Label text="3" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+
+
+        <Label GridPane.columnIndex="1" GridPane.rowIndex="0" text="X Position"/>
+        <Label fx:id="car1Pos" GridPane.columnIndex="1" GridPane.rowIndex="1" text="car1Pos"/>
+        <Label fx:id="car2Pos" GridPane.columnIndex="1" GridPane.rowIndex="2" text="car2Pos"/>
+        <Label fx:id="car3Pos" GridPane.columnIndex="1" GridPane.rowIndex="3" text="car3Pos"/>
+
+        <Label GridPane.columnIndex="2" GridPane.rowIndex="0" text="Y Position"/>
+        <Label GridPane.columnIndex="2" GridPane.rowIndex="1" text="0"/>
+        <Label GridPane.columnIndex="2" GridPane.rowIndex="2" text="0"/>
+        <Label GridPane.columnIndex="2" GridPane.rowIndex="3" text="0"/>
+
+        <Label GridPane.columnIndex="3" GridPane.rowIndex="0" text="Speed(m/s)"/>
+        <Label fx:id="car1Spd" GridPane.columnIndex="3" GridPane.rowIndex="1" text="mph"/>
+        <Label fx:id="car2Spd" GridPane.columnIndex="3" GridPane.rowIndex="2" text="mph"/>
+        <Label fx:id="car3Spd" GridPane.columnIndex="3" GridPane.rowIndex="3" text="mph"/>
+
+        <Label text="Light" GridPane.columnIndex="5" GridPane.rowIndex="0"/>
+        <Label text="1" GridPane.columnIndex="5" GridPane.rowIndex="1"/>
+        <Label text="2" GridPane.columnIndex="5" GridPane.rowIndex="2"/>
+        <Label text="3" GridPane.columnIndex="5" GridPane.rowIndex="3"/>
+
+        <Label text="Position" GridPane.columnIndex="6" GridPane.rowIndex="0"/>
+        <Label text="1000" GridPane.columnIndex="6" GridPane.rowIndex="1"/>
+        <Label text="2000" GridPane.columnIndex="6" GridPane.rowIndex="2"/>
+        <Label text="3000" GridPane.columnIndex="6" GridPane.rowIndex="3"/>
+
+        <Label text="Color" GridPane.columnIndex="7" GridPane.rowIndex="0"/>
+        <Label fx:id="lt1Color" GridPane.columnIndex="7" GridPane.rowIndex="1" text="RED" textFill="red"/>
+        <Label fx:id="lt2Color" GridPane.columnIndex="7" GridPane.rowIndex="2" text="RED" textFill="red"/>
+        <Label fx:id="lt3Color" GridPane.columnIndex="7" GridPane.rowIndex="3" text="RED" textFill="red"/>
+    </GridPane>
+    <HBox>
+        <Button fx:id="addCar" text="Add Car" onAction="#onAddCarButtonClicked"/>
+        <Button fx:id="addLight" text="Add Light" onAction="#onAddLightButtonClicked"/>
+    </HBox>
+    <HBox alignment="BOTTOM_CENTER">
+        <Button text="Start" onAction="#onStartButtonClick"/>
+        <Button text="Pause" onAction="#onPauseButtonClick"/>
+        <Button text="Stop" onAction="#onStopButtonClick" />
+        <Button text="Reset" onAction="#onResetButtonClick"/>
+
+
+    </HBox>
+</VBox>
