@@ -9,96 +9,64 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TrafficController {
+    boolean paused = false;
     @FXML
-    public Label elapsedTimeLabel;
+    public Label elapsedTimeLabel, lt1Color, lt2Color, lt3Color, car1Spd, car2Spd, car3Spd, car1Pos, car2Pos, car3Pos;
     @FXML
-    public Label lt1Color;
-    @FXML
-    public Label lt2Color;
-    @FXML
-    public Label lt3Color;
     public GridPane gridPane;
-    public Label car1Spd;
-    public Label car2Spd;
-    public Label car3Spd;
-    public Label car1Pos;
-    public Label car2Pos;
-    public Label car3Pos;
     MyTimer timer;
     Thread timerThread;
 
-    int lightCount = 3;
-    int carCount = 3;
+    int lightCount = 3, carCount = 3;
     List<Thread> threads = new ArrayList<>();
     List<TrafficLight> lights = new ArrayList<>();
     List<Car> cars = new ArrayList<>();
-    TrafficLight light1;
-    TrafficLight light2;
-    TrafficLight light3;
+    TrafficLight light1, light2, light3;
 
-    Car car1;
-    Car car2;
-    Car car3;
-    /*
-    Thread light1Thread;
-    Thread light2Thread;
-    Thread light3Thread;
-
-     */
-
-    @FXML
-    private Label welcomeText;
-/*
-    public TrafficController() {
-        onStopButtonClick();
-    }
- */
+    Car car1, car2, car3;
 
     @FXML
     protected void onStartButtonClick() {
-
-        System.out.println("Start");
-        for (Thread t: threads) {
-            t.start();
+        if (threads.get(0).isAlive()) {
+            pauseResumeAll();
+            if (paused) paused = false;
         }
-        /*
-        timerThread.start();        //TODO: crashes when used to resume timer.  probably because the thread tries to start when its already started
-
-        light1Thread.start();
-        light2Thread.start();
-        light3Thread.start();
-
-         */
+        //System.out.println("Start");
+        paused = false;
+        for (Thread t : threads) {
+            if (!t.isAlive()) {
+                t.start();
+            }
+        }
     }
 
     @FXML
     public void onPauseButtonClick(ActionEvent actionEvent) {
-        timer.pause();
-        for (TrafficLight l : lights) {
-            l.paused.set(true);
-        }
+        if (paused) pauseResumeAll();
+        paused = false;
     }
 
     @FXML
     public void onStopButtonClick() {
+
         try {
             timer.setRunning(false);
             for (TrafficLight l : lights) {
-                l.paused.set(true);
+                l.setRunning(false);
             }
-            /*
-            light1.pause = true;    // TODO: these should be in a group and looped through
-            light2.pause = true;
-            light3.pause = true;
-             */
+            for (Car c : cars) {
+                c.setRunning(false);
+            }
         } catch (Exception e) {
             System.out.println(e);
         }
         resetThreads();
 
+
     }
 
-    private void resetThreads(){
+
+    private void resetThreads() {
         timer = new MyTimer();
         //timerThread = new Thread(timer);
         light1 = new TrafficLight(1000);
@@ -121,12 +89,6 @@ public class TrafficController {
         threads.add(new Thread(car1));
         threads.add(new Thread(car2));
         threads.add(new Thread(car3));
-        /*
-        light1Thread = new Thread(light1);
-        light2Thread = new Thread(light2);
-        light3Thread = new Thread(light3);
-
-         */
     }
 
     //clears extra cars and lights
@@ -154,10 +116,9 @@ public class TrafficController {
         car3Pos.textProperty().bind(car3.xPos.asString());
 
 
-
     }
 
-    private void addLightRow(TrafficLight lt){
+    private void addLightRow(TrafficLight lt) {
         gridPane.add(new Label(String.valueOf(lightCount)), 5, lightCount); //number
         //Label l = new Label(String.valueOf(lt.posit));
         gridPane.add(new Label(String.valueOf(lt.posit)), 6, lightCount); //position
@@ -182,7 +143,9 @@ public class TrafficController {
         TrafficLight lt = new TrafficLight(lightCount * 1000);
         lights.add(lt);
         Thread t = new Thread(lt);
-        t.start();
+        if (threads.get(0).isAlive()) {
+            t.start();
+        }
         threads.add(t);
         addLightRow(lt);
 
@@ -193,8 +156,20 @@ public class TrafficController {
         Car car = new Car(lights);
         cars.add(car);
         Thread t = new Thread(car);
-        t.start();  //car should wait to go until "start" clicked
+        if (threads.get(0).isAlive()) {
+            t.start();
+        }
         threads.add(t);
         addCarRow(car);
+    }
+
+    public void pauseResumeAll() {
+        timer.pause();
+        for (TrafficLight l : lights) {
+            l.pause();
+        }
+        for (Car c : cars) {
+            c.pause();
+        }
     }
 }

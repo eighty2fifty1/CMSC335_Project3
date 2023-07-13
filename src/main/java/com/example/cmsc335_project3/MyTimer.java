@@ -51,15 +51,4 @@ public class MyTimer extends Observable implements Runnable {
             System.out.println(paused);
         }
     }
-
-    /*
-        synchronized SimpleIntegerProperty getElapsedTime() {
-            return elapsedTime;
-        }
-
-
-     */
-    synchronized ObservableValue<? extends String> getElapsedTime() {
-        return elapsedTime.asString();
-    }
 }
