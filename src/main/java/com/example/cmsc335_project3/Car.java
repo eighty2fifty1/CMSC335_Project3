@@ -22,11 +22,15 @@ public class Car implements Runnable {
         this.trafficLights = t;
     }
 
+    public Car(int x, List<TrafficLight> t) {
+        this.xPos.set(x);
+        this.trafficLights = t;
+    }
+
     @Override
     public void run() {
         while (running) {
-            while (!paused.get()) {
-                System.out.println("driving");
+            if (!paused.get()) {
                 try {
                     Thread.sleep(1000);
                     Platform.runLater(() -> {
@@ -43,10 +47,15 @@ public class Car implements Runnable {
     private void checkLight(SimpleIntegerProperty pos) {
         synchronized (this) {
             if (pos.get() % 1000 == 0) {
-                if (trafficLights.get(1 + (pos.get()) / 1000).ltCol.getColor().equals(LightColor.RED)) {
+                try {
+                    if (trafficLights.get(1 + (pos.get()) / 1000).ltCol.getColor().equals(LightColor.RED)) {
+                        speed.set(0);
+                    } else {
+                        speed.set(25);
+                    }
+                } catch (IndexOutOfBoundsException e) {
                     speed.set(0);
-                } else {
-                    speed.set(25);
+                    setRunning(false);    //car has exited the section of road
                 }
             }
         }

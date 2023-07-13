@@ -14,7 +14,6 @@ public class TrafficLight implements Runnable {
     SimpleBooleanProperty paused = new SimpleBooleanProperty(false);
     boolean running = true;
 
-    boolean changed = false;
 
     int posit;
 
@@ -31,7 +30,7 @@ public class TrafficLight implements Runnable {
     @Override
     public void run() {
         while (running) {
-            while (!paused.get()) {
+            if (!paused.get()) {
                 try {
                     switch (ltCol.getColor()) {
                         case RED: {
@@ -74,24 +73,13 @@ public class TrafficLight implements Runnable {
                 }
             }
         });
-
-        changed = true;
         notify();
     }
 
     synchronized  void setRunning(boolean b){
         running = b;
     }
-    synchronized void waitForChange() {
-        try {
-            while (!changed) {
-                wait();
-                changed = false;
-            }
-        } catch (InterruptedException e) {
-            System.out.println(e);
-        }
-    }
+
     public void pause() {
         synchronized (lock) {
             paused.set(!paused.get());

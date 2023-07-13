@@ -1,6 +1,6 @@
 package com.example.cmsc335_project3;
 
-import javafx.event.ActionEvent;
+import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
@@ -9,13 +9,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TrafficController {
-    boolean paused = false;
     @FXML
     public Label elapsedTimeLabel, lt1Color, lt2Color, lt3Color, car1Spd, car2Spd, car3Spd, car1Pos, car2Pos, car3Pos;
     @FXML
     public GridPane gridPane;
     MyTimer timer;
-    Thread timerThread;
 
     int lightCount = 3, carCount = 3;
     List<Thread> threads = new ArrayList<>();
@@ -29,10 +27,10 @@ public class TrafficController {
     protected void onStartButtonClick() {
         if (threads.get(0).isAlive()) {
             pauseResumeAll();
-            if (paused) paused = false;
+            //if (paused) paused = false;
         }
         //System.out.println("Start");
-        paused = false;
+        //paused = false;
         for (Thread t : threads) {
             if (!t.isAlive()) {
                 t.start();
@@ -41,9 +39,9 @@ public class TrafficController {
     }
 
     @FXML
-    public void onPauseButtonClick(ActionEvent actionEvent) {
-        if (paused) pauseResumeAll();
-        paused = false;
+    public void onPauseButtonClick() {
+        if (threads.get(0).isAlive()) pauseResumeAll();
+        //paused = false;
     }
 
     @FXML
@@ -60,9 +58,6 @@ public class TrafficController {
         } catch (Exception e) {
             System.out.println(e);
         }
-        resetThreads();
-
-
     }
 
 
@@ -76,8 +71,8 @@ public class TrafficController {
         lights.add(light2);
         lights.add(light3);
         car1 = new Car(lights);
-        car2 = new Car(lights);
-        car3 = new Car(lights);
+        car2 = new Car(975, lights);
+        car3 = new Car(1000, lights);
         cars.add(car1);
         cars.add(car2);
         cars.add(car3);
@@ -89,11 +84,6 @@ public class TrafficController {
         threads.add(new Thread(car1));
         threads.add(new Thread(car2));
         threads.add(new Thread(car3));
-    }
-
-    //clears extra cars and lights
-    @FXML
-    public void onResetButtonClick(ActionEvent actionEvent) {
     }
 
     @FXML
@@ -114,7 +104,27 @@ public class TrafficController {
         car1Pos.textProperty().bind(car1.xPos.asString());
         car2Pos.textProperty().bind(car2.xPos.asString());
         car3Pos.textProperty().bind(car3.xPos.asString());
+        //conditional formatting using css
+        lt1Color.styleProperty().bind(Bindings.createStringBinding(() ->
+                "-fx-text-fill: " + getColor(light1), light1.ltCol.colorProperty()
+        ));
+        lt2Color.styleProperty().bind(Bindings.createStringBinding(() ->
+                "-fx-text-fill: " + getColor(light2), light2.ltCol.colorProperty()
+        ));
+        lt3Color.styleProperty().bind(Bindings.createStringBinding(() ->
+                "-fx-text-fill: " + getColor(light3), light3.ltCol.colorProperty()
+        ));
 
+
+    }
+
+    private String getColor(TrafficLight t) {
+        LightColor l = t.ltCol.getColor();
+        if (l == LightColor.RED) {
+            return "red";
+        } else if (l == LightColor.YELLOW) {
+            return "yellow";
+        } else return "green";
 
     }
 
@@ -138,29 +148,33 @@ public class TrafficController {
         gridPane.add(l, 3, carCount);
     }
 
-    public void onAddLightButtonClicked(ActionEvent actionEvent) {
-        lightCount += 1;
-        TrafficLight lt = new TrafficLight(lightCount * 1000);
-        lights.add(lt);
-        Thread t = new Thread(lt);
-        if (threads.get(0).isAlive()) {
-            t.start();
+    public void onAddLightButtonClicked() {
+        if (lightCount < 5) {
+            lightCount += 1;
+            TrafficLight lt = new TrafficLight(lightCount * 1000);
+            lights.add(lt);
+            Thread t = new Thread(lt);
+            if (threads.get(0).isAlive()) {
+                t.start();
+            }
+            threads.add(t);
+            addLightRow(lt);
         }
-        threads.add(t);
-        addLightRow(lt);
 
     }
 
-    public void onAddCarButtonClicked(ActionEvent actionEvent) {
-        carCount += 1;
-        Car car = new Car(lights);
-        cars.add(car);
-        Thread t = new Thread(car);
-        if (threads.get(0).isAlive()) {
-            t.start();
+    public void onAddCarButtonClicked() {
+        if (carCount < 5) {
+            carCount += 1;
+            Car car = new Car(lights);
+            cars.add(car);
+            Thread t = new Thread(car);
+            if (threads.get(0).isAlive()) {
+                t.start();
+            }
+            threads.add(t);
+            addCarRow(car);
         }
-        threads.add(t);
-        addCarRow(car);
     }
 
     public void pauseResumeAll() {

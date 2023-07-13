@@ -7,7 +7,6 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.control.TextField?>
 <VBox alignment="CENTER" spacing="20.0" xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.example.cmsc335_project3.TrafficController">
     <padding>
@@ -53,15 +52,12 @@
         <Label fx:id="lt3Color" GridPane.columnIndex="7" GridPane.rowIndex="3" text="RED" textFill="red"/>
     </GridPane>
     <HBox>
-        <Button fx:id="addCar" text="Add Car" onAction="#onAddCarButtonClicked"/>
-        <Button fx:id="addLight" text="Add Light" onAction="#onAddLightButtonClicked"/>
+        <Button text="Add Car" onAction="#onAddCarButtonClicked"/>
+        <Button text="Add Light" onAction="#onAddLightButtonClicked"/>
     </HBox>
     <HBox alignment="BOTTOM_CENTER">
         <Button text="Start" onAction="#onStartButtonClick"/>
         <Button text="Pause" onAction="#onPauseButtonClick"/>
         <Button text="Stop" onAction="#onStopButtonClick" />
-        <Button text="Reset" onAction="#onResetButtonClick"/>
-
-
     </HBox>
 </VBox>
