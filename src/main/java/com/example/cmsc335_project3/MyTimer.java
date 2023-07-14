@@ -36,6 +36,7 @@ public class MyTimer extends Observable implements Runnable {
                 System.out.println(e);
             }
         }
+        System.out.println("timer thread ended");
     }
 
     public void setRunning(boolean b) {

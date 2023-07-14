@@ -46,18 +46,19 @@ public class TrafficController {
 
     @FXML
     public void onStopButtonClick() {
-
+System.out.println("stop");
         try {
-            timer.setRunning(false);
+            timer.running.set(false);
             for (TrafficLight l : lights) {
-                l.setRunning(false);
+                l.running.set(false);
             }
             for (Car c : cars) {
-                c.setRunning(false);
+                c.running.set(false);
             }
         } catch (Exception e) {
             System.out.println(e);
         }
+        resetThreads();
     }
 
 
@@ -134,6 +135,9 @@ public class TrafficController {
         gridPane.add(new Label(String.valueOf(lt.posit)), 6, lightCount); //position
         Label l = new Label();
         l.textProperty().bind(lt.ltCol.colorProperty().asString());
+        l.styleProperty().bind(Bindings.createStringBinding(() ->
+                "-fx-text-fill: " + getColor(lt), lt.ltCol.colorProperty()
+        ));
         gridPane.add(l, 7, lightCount); //color
     }
 

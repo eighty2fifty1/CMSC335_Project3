@@ -12,73 +12,48 @@ public class TrafficLight implements Runnable {
     LightColorProperty ltCol = new LightColorProperty(LightColor.RED);
 
     SimpleBooleanProperty paused = new SimpleBooleanProperty(false);
-    boolean running = true;
+    SimpleBooleanProperty running = new SimpleBooleanProperty(true);
 
 
     int posit;
 
-
-    TrafficLight() {
-        ltCol.setColor(LightColor.RED);
-    }
-
     TrafficLight(int p) {
-        ltCol.setColor(LightColor.RED);
+        //ltCol.setColor(LightColor.RED);
         posit = p;
     }
 
     @Override
     public void run() {
-        while (running) {
+        running.set(true);
+        while (running.get()) {
             if (!paused.get()) {
                 try {
                     switch (ltCol.getColor()) {
                         case RED: {
                             Thread.sleep(10000);
+                            Platform.runLater(() -> ltCol.setColor(LightColor.GREEN));
                             break;
                         }
                         case GREEN: {
                             Thread.sleep(12000);
+                            Platform.runLater(() -> ltCol.setColor(LightColor.YELLOW));
                             break;
                         }
                         case YELLOW: {
                             Thread.sleep(3000);
+                            Platform.runLater(() -> ltCol.setColor(LightColor.RED));
                             break;
                         }
                     }
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
-                changeColor();
+                ;
             }
         }
+        System.out.println("light thread ended");
     }
 
-    synchronized void changeColor() {
-        Platform.runLater(() -> {
-            if (!paused.get()) {
-                switch (ltCol.getColor()) {
-                    case YELLOW: {
-                        ltCol.setColor(LightColor.RED);
-                        break;
-                    }
-                    case RED: {
-                        ltCol.setColor(LightColor.GREEN);
-                        break;
-                    }
-                    case GREEN: {
-                        ltCol.setColor(LightColor.YELLOW);
-                        break;
-                    }
-                }
-            }
-        });
-        notify();
-    }
-
-    synchronized  void setRunning(boolean b){
-        running = b;
-    }
 
     public void pause() {
         synchronized (lock) {

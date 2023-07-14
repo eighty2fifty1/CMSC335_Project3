@@ -16,7 +16,7 @@ public class Car implements Runnable {
     SimpleBooleanProperty paused = new SimpleBooleanProperty(false);
     List<TrafficLight> trafficLights;
 
-    boolean running = true;
+    SimpleBooleanProperty running = new SimpleBooleanProperty(true);
 
     public Car(List<TrafficLight> t) {
         this.trafficLights = t;
@@ -29,7 +29,7 @@ public class Car implements Runnable {
 
     @Override
     public void run() {
-        while (running) {
+        while (running.get()) {
             if (!paused.get()) {
                 try {
                     Thread.sleep(1000);
@@ -42,28 +42,26 @@ public class Car implements Runnable {
                 }
             }
         }
+        System.out.println("car thread ended");
     }
 
     private void checkLight(SimpleIntegerProperty pos) {
-        synchronized (this) {
             if (pos.get() % 1000 == 0) {
                 try {
-                    if (trafficLights.get(1 + (pos.get()) / 1000).ltCol.getColor().equals(LightColor.RED)) {
+                    if (trafficLights.get(((pos.get()) / 1000)).ltCol.getColor() == LightColor.RED) {
                         speed.set(0);
                     } else {
                         speed.set(25);
                     }
                 } catch (IndexOutOfBoundsException e) {
+                    System.out.println("car exited");
                     speed.set(0);
-                    setRunning(false);    //car has exited the section of road
+                    running.set(false);    //car has exited the section of road
                 }
             }
-        }
+
     }
 
-    synchronized void setRunning(boolean b) {
-        running = b;
-    }
 
     public void pause() {
         synchronized (lock) {
